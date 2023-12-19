@@ -10,6 +10,9 @@ import {
 } from './definitions';
 import { formatCurrency } from './utils';
 
+const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
+const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
+
 export async function fetchRevenue() {
   // Add noStore() here prevent the response from being cached.
   // This is equivalent to in fetch(..., {cache: 'no-store'}).
@@ -21,16 +24,12 @@ export async function fetchRevenue() {
     // console.log('Fetching revenue data...');
     // await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    //const data = await sql<Revenue>`SELECT * FROM revenue`;
+    const data = await sql<Revenue>`SELECT * FROM revenue`;
+    
     // Fetch the last 5 invoices, sorted by date
-    const data = await sql<LatestInvoiceRaw>`
-      SELECT invoices.amount, customers.name, customers.image_url, customers.email
-      FROM invoices
-      JOIN customers ON invoices.customer_id = customers.id
-      ORDER BY invoices.date DESC
-      LIMIT 5`;
+    
 
-    // console.log('Data fetch completed after 3 seconds.');
+    console.log('Data fetch completed after 3 seconds.');
 
     return data.rows;
   } catch (error) {
